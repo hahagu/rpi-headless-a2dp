@@ -9,3 +9,5 @@ In your rpi3 terminal, or via ssh
 `cd rpi-headless-a2dp`
 
 `./headless-a2dp.sh`
+
+This will automatically install all the dependencies and enable the services.
