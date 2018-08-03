@@ -63,8 +63,8 @@ case ${nameansw:0:1} in
     y|Y )
         ## Change Hostname
         echo "Changing Hostname"
-        sudo sed -i 's/$(hostname)/$btname/g' /etc/hosts
-        sudo sed -i 's/$(hostname)/$btname/g' /etc/hostname
+        sudo sed -i "s/$(hostname)/$btname/g" /etc/hosts
+        sudo sed -i "s/$(hostname)/$btname/g" /etc/hostname
         sudo hostname $btname
         sudo service networking restart
     ;;
