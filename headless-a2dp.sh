@@ -3,6 +3,40 @@
 ## The original services and scripts were created by @mill1000
 ## Automation Script created by hahagu, UTC 2018-08-02
 
+## Set Name and etc
+echo "Disable Integrated Bluetooth?"
+echo "This is recommended due to bugs with the integrated wifi."
+echo "Please use a dongle if you want to disable this."
+read -p "Disable? (y/n) " btansw
+case ${btansw:0:1} in
+    y|Y )
+        ## Disable Bluetooth
+        echo "Disabling Internal Bluetooth"
+        printf "\n# Disable onboard Bluetooth\ndtoverlay=pi3-disable-bt" >> /boot/config.txt
+        sudo systemctl disable hciuart.service
+    ;;
+    * )
+        echo "Skipping.."
+    ;;
+esac
+
+echo "Device Name? Currently $(hostname) "
+read btname
+read -p "Do you want to set the name as $btname? (y/n) " nameansw
+case ${nameansw:0:1} in
+    y|Y )
+        ## Change Hostname
+        echo "Changing Hostname"
+        sudo sed -i 's/$(hostname)/$btname/g' /etc/hosts
+        sudo sed -i 's/$(hostname)/$btname/g' /etc/hostname
+        sudo hostname $btname
+        sudo service networking restart
+    ;;
+    * )
+        echo "Skipping.."
+    ;;
+esac
+
 ## Updating System
 echo "Updating System"
 sudo apt-get update
