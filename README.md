@@ -4,9 +4,7 @@ This is an automated installation script automating the process of [this post](h
 ## Usage
 In your rpi3 terminal, or via ssh
 
-`git clone https://github.com/hahagu/rpi-headless-a2dp.git`
-
-`cd rpi-headless-a2dp`
+`git clone https://github.com/hahagu/rpi-headless-a2dp.git && cd rpi-headless-a2dp`
 
 `./headless-a2dp.sh`
 
