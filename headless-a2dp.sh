@@ -9,6 +9,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 ## Set Name and etc
+printf "\n"
 echo "Disable Integrated Bluetooth?"
 echo "This is recommended due to bugs with the integrated wifi."
 echo "Please use a dongle if you want to disable this."
@@ -16,11 +17,13 @@ read -p "Disable? (y/n) " btansw
 case ${btansw:0:1} in
     y|Y )
         ## Disable Bluetooth
+        printf "\n"
         echo "Disabling Internal Bluetooth"
         printf "\n# Disable onboard Bluetooth\ndtoverlay=pi3-disable-bt" >> /boot/config.txt
         sudo systemctl disable hciuart.service
     ;;
     * )
+        printf "\n"
         echo "Skipping.."
     ;;
 esac
@@ -32,6 +35,7 @@ read -p "Update? (y/n) " bluezansw
 case ${bluezansw:0:1} in
     y|Y )
         ## Updating from source
+        printf "\n"
         echo "Installing Prerequisites"
         sudo apt install libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev -y
         echo "Downloading Source"
@@ -51,6 +55,7 @@ case ${bluezansw:0:1} in
         rm -rf ./bluez-5.50*
     ;;
     * )
+        printf "\n"
         echo "Skipping.."
     ;;
 esac
@@ -62,6 +67,7 @@ read -p "Do you want to set the name as $btname? (y/n) " nameansw
 case ${nameansw:0:1} in
     y|Y )
         ## Change Hostname
+        printf "\n"
         echo "Changing Hostname"
         sudo sed -i "s/$(hostname)/$btname/g" /etc/hosts
         sudo sed -i "s/$(hostname)/$btname/g" /etc/hostname
@@ -69,20 +75,24 @@ case ${nameansw:0:1} in
         sudo service networking restart
     ;;
     * )
+        printf "\n"
         echo "Skipping.."
     ;;
 esac
 
 ## Installing Dependencies
+printf "\n"
 echo "Installing Dependencies"
 sudo apt-get install bluealsa python-dbus
 
 ## Make Bluetooth Discoverable
+printf "\n"
 echo "Making Bluetooth Discoverable"
 sudo sed -i 's/#DiscoverableTimeout = 0/DiscoverableTimeout = 0/g' /etc/bluetooth/main.conf
 echo -e 'power on \ndiscoverable on \nquit' | sudo bluetoothctl
 
 ## Create Services
+printf "\n"
 echo "Creating Services"
 wget https://gist.github.com/hahagu/f633ad07014ded3c3833203a77a213c4/raw/ef68cb99020dc754459d1a0b14726a23be4233ed/a2dp-agent
 sudo mv a2dp-agent /usr/local/bin
@@ -99,6 +109,7 @@ sudo systemctl enable a2dp-playback.service
 sudo sed -i -e '$i \# Make Bluetooth Discoverable\necho -e "discoverable on \\nquit" | sudo bluetoothctl\n' /etc/rc.local
 
 ## Reboot
+printf "\n"
 echo "Rebooting in 5 seconds.."
 sleep 5
 sudo reboot
