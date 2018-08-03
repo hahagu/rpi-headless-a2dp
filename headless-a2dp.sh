@@ -6,7 +6,7 @@
 ## Updating System
 echo "Updating System"
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get upgrade -y
 
 ## Set Name and etc
 echo "Disable Integrated Bluetooth?"
@@ -32,8 +32,10 @@ read -p "Update? (y/n) " bluezansw
 case ${bluezansw:0:1} in
     y|Y )
         ## Updating from source
+        echo "Installing Prerequisites"
+        sudo apt install libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev -y
         echo "Downloading Source"
-        wget www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
+        wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
         echo "Extracting Source"
         tar xvf bluez-5.50.tar.xz
         cd bluez-5.50
