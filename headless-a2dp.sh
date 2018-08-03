@@ -20,6 +20,33 @@ case ${btansw:0:1} in
     ;;
 esac
 
+printf "\n"
+echo "Update BlueZ to 5.50?"
+echo "This will resolve the stuttering issue when onboard wifi is used."
+read -p "Update? (y/n) " bluezansw
+case ${bluezansw:0:1} in
+    y|Y )
+        ## Updating from source
+        echo "Downloading Source"
+        wget www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
+        echo "Extracting Source"
+        tar xvf bluez-5.50.tar.xz
+        cd bluez-5.50
+        echo "Configuring"
+        ./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental 
+        echo "Compiling"
+        make -j4
+        echo "Installing"
+        sudo make install
+        echo "Cleaning"
+        rm -rf ./bluez-5.50*
+    ;;
+    * )
+        echo "Skipping.."
+    ;;
+esac
+
+printf "\n"
 echo "Device Name? Currently $(hostname) "
 read btname
 read -p "Do you want to set the name as $btname? (y/n) " nameansw
