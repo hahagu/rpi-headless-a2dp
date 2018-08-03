@@ -16,7 +16,7 @@ echo "This is recommended due to bugs with the integrated wifi."
 echo "Option 1. Disable Onboard Bluetooth (Use dongle)"
 echo "Option 2. Update BlueZ to 5.50 (Does not work on all cases!)"
 echo "Option 3. Do Nothing"
-read -p "Choose Option (1/2/3)" btansw
+read -p "Choose Option (1/2/3) " btansw
 case ${btansw:0:1} in
     1 )
         ## Disable Bluetooth
