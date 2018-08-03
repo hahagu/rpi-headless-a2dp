@@ -7,33 +7,25 @@
 echo "Updating System"
 sudo apt-get update
 sudo apt-get upgrade -y
+sudo rpi-update
 
 ## Set Name and etc
 printf "\n"
-echo "Disable Integrated Bluetooth?"
+echo "Bluetooth Workaround"
 echo "This is recommended due to bugs with the integrated wifi."
-echo "Please use a dongle if you want to disable this."
-read -p "Disable? (y/n) " btansw
+echo "Option 1. Disable Onboard Bluetooth (Use dongle)"
+echo "Option 2. Update BlueZ to 5.50 (Does not work on all cases!)"
+echo "Option 3. Do Nothing"
+read -p "Choose Option (1/2/3)" btansw
 case ${btansw:0:1} in
-    y|Y )
+    1 )
         ## Disable Bluetooth
         printf "\n"
         echo "Disabling Internal Bluetooth"
         printf "\n# Disable onboard Bluetooth\ndtoverlay=pi3-disable-bt" >> /boot/config.txt
         sudo systemctl disable hciuart.service
     ;;
-    * )
-        printf "\n"
-        echo "Skipping.."
-    ;;
-esac
-
-printf "\n"
-echo "Update BlueZ to 5.50?"
-echo "This will resolve the stuttering issue when onboard wifi is used."
-read -p "Update? (y/n) " bluezansw
-case ${bluezansw:0:1} in
-    y|Y )
+    2 )
         ## Updating from source
         printf "\n"
         echo "Installing Prerequisites"
@@ -50,6 +42,8 @@ case ${bluezansw:0:1} in
         echo "Installing"
         sudo make install
         sudo adduser pi bluetooth
+        sudo sed -i -e -n 's|<allow send_interface="org.bluez.Profile1"/>|<allow send_interface="org.bluez.AlertAgent1"/>\n    <allow send_interface="org.bluez.ThermometerWatcher1"/>\n    <allow send_interface="org.bluez.HeartRateWatcher1"/>\n    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>|g' /etc/dbus-1/system.d/bluetooth.conf
+        sudo sed -i -e -n 's|<allow send_interface="org.freedesktop.DBus.Properties"/>\n  </policy>|<allow send_interface="org.freedesktop.DBus.Properties"/n  </policy>\n\n  <!-- allow users of bluetooth group to communicate -->\n  <policy group="bluetooth">\n    <allow send_destination="org.bluez"/>\n  </policy>\n\n|g' /etc/dbus-1/system.d/bluetooth.conf
         echo "Cleaning"
         cd ..
         rm -rf ./bluez-5.50*
@@ -69,9 +63,9 @@ case ${nameansw:0:1} in
         ## Change Hostname
         printf "\n"
         echo "Changing Hostname"
-        sudo sed -i "s/$(hostname)/$btname/g" /etc/hosts
-        sudo sed -i "s/$(hostname)/$btname/g" /etc/hostname
         sudo hostname $btname
+        sudo sed -i -n "s/$(hostname)/$btname/g" /etc/hosts
+        sudo sed -i -n "s/$(hostname)/$btname/g" /etc/hostname
         sudo service networking restart
     ;;
     * )
@@ -88,7 +82,7 @@ sudo apt-get install bluealsa python-dbus
 ## Make Bluetooth Discoverable
 printf "\n"
 echo "Making Bluetooth Discoverable"
-sudo sed -i 's/#DiscoverableTimeout = 0/DiscoverableTimeout = 0/g' /etc/bluetooth/main.conf
+sudo sed -i -e -n's/#DiscoverableTimeout = 0/DiscoverableTimeout = 0/g' /etc/bluetooth/main.conf
 echo -e 'power on \ndiscoverable on \nquit' | sudo bluetoothctl
 
 ## Create Services
@@ -106,7 +100,7 @@ wget https://gist.github.com/hahagu/f633ad07014ded3c3833203a77a213c4/raw/ef68cb9
 sudo mv a2dp-playback.service /etc/systemd/system
 sudo systemctl enable a2dp-playback.service
 
-sudo sed -i -e '$i \# Make Bluetooth Discoverable\necho -e "discoverable on \\nquit" | sudo bluetoothctl\n' /etc/rc.local
+sudo sed -i -e -n '$i \# Make Bluetooth Discoverable\necho -e "discoverable on \\nquit" | sudo bluetoothctl\n' /etc/rc.local
 
 ## Reboot
 printf "\n"
