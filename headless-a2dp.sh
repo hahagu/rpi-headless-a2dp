@@ -3,6 +3,11 @@
 ## The original services and scripts were created by @mill1000
 ## Automation Script created by hahagu, UTC 2018-08-02
 
+## Updating System
+echo "Updating System"
+sudo apt-get update
+sudo apt-get upgrade
+
 ## Set Name and etc
 echo "Disable Integrated Bluetooth?"
 echo "This is recommended due to bugs with the integrated wifi."
@@ -64,11 +69,6 @@ case ${nameansw:0:1} in
         echo "Skipping.."
     ;;
 esac
-
-## Updating System
-echo "Updating System"
-sudo apt-get update
-sudo apt-get upgrade
 
 ## Installing Dependencies
 echo "Installing Dependencies"
