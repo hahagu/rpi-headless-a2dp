@@ -42,7 +42,7 @@ case ${btansw:0:1} in
         echo "Installing"
         sudo make install
         sudo adduser pi bluetooth
-        sudo sed -i -e 's|<allow send_interface="org.bluez.Profile1"/>|<allow send_interface="org.bluez.AlertAgent1"/>\n    <allow send_interface="org.bluez.ThermometerWatcher1"/>\n    <allow send_interface="org.bluez.HeartRateWatcher1"/>\n    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>|g' /etc/dbus-1/system.d/bluetooth.conf
+        sudo sed -i -e 's|<allow send_interface="org.bluez.Profile1"/>|<allow send_interface="org.bluez.Profile1"/>\n    <allow send_interface="org.bluez.AlertAgent1"/>\n    <allow send_interface="org.bluez.ThermometerWatcher1"/>\n    <allow send_interface="org.bluez.HeartRateWatcher1"/>\n    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>|g' /etc/dbus-1/system.d/bluetooth.conf
         sudo sed -i -e 's|<allow send_interface="org.freedesktop.DBus.Properties"/>\n  </policy>|<allow send_interface="org.freedesktop.DBus.Properties"/n  </policy>\n\n  <!-- allow users of bluetooth group to communicate -->\n  <policy group="bluetooth">\n    <allow send_destination="org.bluez"/>\n  </policy>\n\n|g' /etc/dbus-1/system.d/bluetooth.conf
         echo "Cleaning"
         cd ..
