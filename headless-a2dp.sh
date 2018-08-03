@@ -42,8 +42,8 @@ case ${btansw:0:1} in
         echo "Installing"
         sudo make install
         sudo adduser pi bluetooth
-        sudo sed -i -e -n 's|<allow send_interface="org.bluez.Profile1"/>|<allow send_interface="org.bluez.AlertAgent1"/>\n    <allow send_interface="org.bluez.ThermometerWatcher1"/>\n    <allow send_interface="org.bluez.HeartRateWatcher1"/>\n    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>|g' /etc/dbus-1/system.d/bluetooth.conf
-        sudo sed -i -e -n 's|<allow send_interface="org.freedesktop.DBus.Properties"/>\n  </policy>|<allow send_interface="org.freedesktop.DBus.Properties"/n  </policy>\n\n  <!-- allow users of bluetooth group to communicate -->\n  <policy group="bluetooth">\n    <allow send_destination="org.bluez"/>\n  </policy>\n\n|g' /etc/dbus-1/system.d/bluetooth.conf
+        sudo sed -i -e 's|<allow send_interface="org.bluez.Profile1"/>|<allow send_interface="org.bluez.AlertAgent1"/>\n    <allow send_interface="org.bluez.ThermometerWatcher1"/>\n    <allow send_interface="org.bluez.HeartRateWatcher1"/>\n    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>|g' /etc/dbus-1/system.d/bluetooth.conf
+        sudo sed -i -e 's|<allow send_interface="org.freedesktop.DBus.Properties"/>\n  </policy>|<allow send_interface="org.freedesktop.DBus.Properties"/n  </policy>\n\n  <!-- allow users of bluetooth group to communicate -->\n  <policy group="bluetooth">\n    <allow send_destination="org.bluez"/>\n  </policy>\n\n|g' /etc/dbus-1/system.d/bluetooth.conf
         echo "Cleaning"
         cd ..
         rm -rf ./bluez-5.50*
@@ -64,8 +64,8 @@ case ${nameansw:0:1} in
         printf "\n"
         echo "Changing Hostname"
         sudo hostname $btname
-        sudo sed -i -n "s/$(hostname)/$btname/g" /etc/hosts
-        sudo sed -i -n "s/$(hostname)/$btname/g" /etc/hostname
+        sudo sed -i -e "s/$(hostname)/$btname/g" /etc/hosts
+        sudo sed -i -e "s/$(hostname)/$btname/g" /etc/hostname
         sudo service networking restart
     ;;
     * )
@@ -82,7 +82,7 @@ sudo apt-get install bluealsa python-dbus
 ## Make Bluetooth Discoverable
 printf "\n"
 echo "Making Bluetooth Discoverable"
-sudo sed -i -e -n's/#DiscoverableTimeout = 0/DiscoverableTimeout = 0/g' /etc/bluetooth/main.conf
+sudo sed -i -e 's/#DiscoverableTimeout = 0/DiscoverableTimeout = 0/g' /etc/bluetooth/main.conf
 echo -e 'power on \ndiscoverable on \nquit' | sudo bluetoothctl
 
 ## Create Services
@@ -100,7 +100,7 @@ wget https://gist.github.com/hahagu/f633ad07014ded3c3833203a77a213c4/raw/ef68cb9
 sudo mv a2dp-playback.service /etc/systemd/system
 sudo systemctl enable a2dp-playback.service
 
-sudo sed -i -e -n '$i \# Make Bluetooth Discoverable\necho -e "discoverable on \\nquit" | sudo bluetoothctl\n' /etc/rc.local
+sudo sed -i -e '$i \# Make Bluetooth Discoverable\necho -e "discoverable on \\nquit" | sudo bluetoothctl\n' /etc/rc.local
 
 ## Reboot
 printf "\n"
