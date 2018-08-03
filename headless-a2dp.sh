@@ -47,6 +47,7 @@ case ${bluezansw:0:1} in
         sudo make install
         sudo adduser pi bluetooth
         echo "Cleaning"
+        cd ..
         rm -rf ./bluez-5.50*
     ;;
     * )
